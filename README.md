@@ -1,145 +1,267 @@
 # Bitcoin Trader Performance vs Market Sentiment Analysis
 
-Analysis of the relationship between trader performance on Hyperliquid and Bitcoin market sentiment (Fear/Greed Index).
-
 ## Project Overview
 
-This project explores hidden patterns and correlations between:
-- **Trader Performance Metrics**: Win rates, PnL, leverage, risk-adjusted returns
-- **Market Sentiment**: Fear/Greed Index classifications
-- **Trading Behavior**: Volume, position sizes, risk-taking patterns
+This project investigates the relationship between Bitcoin market sentiment and trader performance using the Bitcoin Fear & Greed Index and Hyperliquid historical trading data.
+
+The objective is to determine how market sentiment influences:
+
+* Trader profitability
+* Win rates
+* Trading activity
+* Position sizing behavior
+* Transaction costs
+* Overall trading efficiency
+
+The analysis combines over **211,000 real trading records** with daily Bitcoin market sentiment data to uncover actionable insights and hidden trading patterns.
+
+---
 
 ## Datasets
 
-1. **Bitcoin Market Sentiment Dataset**
-   - Columns: Date, Classification (Fear/Greed)
-   - Source: Fear & Greed Index
+### 1. Bitcoin Fear & Greed Index Dataset
 
-2. **Historical Trader Data from Hyperliquid**
-   - Columns: account, symbol, execution price, size, side, time, start position, event, closedPnL, leverage, etc.
+**Records:** 2,644
+
+**Columns:**
+
+* Timestamp
+* Value
+* Classification
+* Date
+
+**Sentiment Categories:**
+
+* Extreme Fear
+* Fear
+* Neutral
+* Greed
+* Extreme Greed
+
+### 2. Hyperliquid Historical Trading Dataset
+
+**Records:** 211,224 Trades
+
+**Columns Used:**
+
+* Account
+* Coin
+* Execution Price
+* Size USD
+* Size Tokens
+* Direction
+* Closed PnL
+* Fee
+* Timestamp IST
+
+---
 
 ## Project Structure
 
-```
+```text
 bitcoin-trader-analysis/
+│
 ├── data/
-│   ├── raw/
-│   │   ├── hyperliquid_traders.csv
-│   │   └── fear_greed_index.csv
-│   ├── processed/
-│   └── README.md
+│   ├── fear_greed_index.csv
+│   └── historical_data.csv
+│
 ├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_data_cleaning.ipynb
-│   ├── 03_trader_performance_analysis.ipynb
-│   ├── 04_sentiment_analysis.ipynb
-│   └── 05_pattern_discovery.ipynb
-├── src/
-│   ├── __init__.py
-│   ├── data_loader.py
-│   ├── data_cleaner.py
-│   ├── performance_metrics.py
-│   ├── sentiment_analyzer.py
-│   └── visualizations.py
+│   └── analysis.ipynb
+│
+├── visualizations/
+│   ├── avg_pnl_by_sentiment.png
+│   ├── win_rate_by_sentiment.png
+│   ├── trade_count_by_sentiment.png
+│   ├── position_size_by_sentiment.png
+│   └── top_10_traders.png
+│
 ├── reports/
-│   ├── analysis_summary.md
-│   └── insights.md
+│   └── final_report.pdf
+│
 ├── requirements.txt
-├── .gitignore
 └── README.md
 ```
 
-## Key Analysis Areas
+---
 
-### 1. Data Exploration & Preparation
-- Load and understand both datasets
-- Data quality assessment
-- Timestamp alignment
-- Missing value handling
+## Methodology
 
-### 2. Trader Performance Metrics
-- Win rate calculation
-- Average PnL analysis
-- Risk-adjusted returns (Sharpe ratio)
-- Win/loss ratios
-- Leverage analysis
+### Data Preparation
 
-### 3. Market Sentiment Analysis
-- Fear vs Greed period identification
-- Sentiment transitions
-- Trader behavior during different sentiment phases
+* Loaded both datasets using Pandas
+* Converted timestamps into a common date format
+* Extracted trade dates from Hyperliquid timestamps
+* Merged trading records with daily sentiment labels
 
-### 4. Pattern Discovery
-- Correlation analysis: Sentiment vs Performance
-- Trader archetypes identification
-- Optimal trading conditions
-- Risk-taking behavior patterns
+### Feature Engineering
 
-### 5. Insights & Recommendations
-- Key findings visualization
-- Strategy recommendations
-- Risk management insights
+Created:
 
-## Installation
+* Win Indicator (Closed PnL > 0)
+* Sentiment-wise profitability metrics
+* Trader-level performance summaries
 
-### Prerequisites
-- Python 3.8+
-- pip
+### Analysis Performed
 
-### Setup
+* Profitability Analysis
+* Win Rate Analysis
+* Trading Activity Analysis
+* Position Size Analysis
+* Fee Analysis
+* Top Trader Analysis
 
-```bash
-# Clone the repository
-git clone https://github.com/sanketdhonde/bitcoin-trader-analysis.git
-cd bitcoin-trader-analysis
+---
 
-# Create virtual environment
-python -m venv venv
+## Key Findings
 
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
+### Average Profitability by Sentiment
 
-# Install dependencies
-pip install -r requirements.txt
+| Sentiment     | Average PnL |
+| ------------- | ----------: |
+| Extreme Greed |       67.89 |
+| Fear          |       54.29 |
+| Greed         |       42.74 |
+| Extreme Fear  |       34.54 |
+| Neutral       |       34.31 |
 
-# Start Jupyter
-jupyter notebook
-```
+**Insight:** Extreme Greed periods generated the highest average profit per trade.
 
-## Usage
+---
 
-1. **Place your data files in `data/raw/`**:
-   - `hyperliquid_traders.csv`
-   - `fear_greed_index.csv`
+### Win Rate by Sentiment
 
-2. **Run notebooks in order**:
-   - `01_data_exploration.ipynb` - Initial data assessment
-   - `02_data_cleaning.ipynb` - Data preparation
-   - `03_trader_performance_analysis.ipynb` - Calculate metrics
-   - `04_sentiment_analysis.ipynb` - Sentiment analysis
-   - `05_pattern_discovery.ipynb` - Find patterns & correlations
+| Sentiment     | Win Rate |
+| ------------- | -------: |
+| Extreme Greed |   46.49% |
+| Fear          |   42.08% |
+| Neutral       |   39.70% |
+| Greed         |   38.48% |
+| Extreme Fear  |   37.06% |
 
-## Key Findings (To be updated)
+**Insight:** Traders were most successful during Extreme Greed periods.
 
-Coming soon as analysis progresses...
+---
 
-## Dependencies
+### Trading Activity
 
-- pandas: Data manipulation
-- numpy: Numerical computations
-- matplotlib: Visualization
-- seaborn: Statistical visualizations
-- scipy: Statistical analysis
-- scikit-learn: Machine learning utilities
+| Sentiment     | Trade Count |
+| ------------- | ----------: |
+| Fear          |      61,837 |
+| Greed         |      50,303 |
+| Extreme Greed |      39,992 |
+| Neutral       |      37,686 |
+| Extreme Fear  |      21,400 |
 
-See `requirements.txt` for full list.
+**Insight:** Fear periods produced the highest trading activity.
+
+---
+
+### Average Position Size
+
+| Sentiment     | Avg Position Size (USD) |
+| ------------- | ----------------------: |
+| Fear          |                   7,816 |
+| Greed         |                   5,737 |
+| Extreme Fear  |                   5,350 |
+| Neutral       |                   4,783 |
+| Extreme Greed |                   3,112 |
+
+**Insight:** Traders deployed the largest positions during Fear periods.
+
+---
+
+### Average Trading Fee
+
+| Sentiment     | Avg Fee |
+| ------------- | ------: |
+| Fear          |   1.495 |
+| Greed         |   1.254 |
+| Extreme Fear  |   1.116 |
+| Neutral       |   1.045 |
+| Extreme Greed |   0.676 |
+
+**Insight:** Fear periods incurred the highest transaction costs.
+
+---
+
+## Top Trader Insights
+
+The most profitable trader generated:
+
+* Total Profit: **$2.14 Million**
+* Win Rate: **33.7%**
+
+Interestingly, another trader achieved:
+
+* Win Rate: **81.1%**
+* Total Profit: **$379K**
+
+### Key Observation
+
+A higher win rate does not necessarily lead to higher profitability.
+
+Successful traders appear to focus on:
+
+* Risk-reward optimization
+* Position management
+* Capturing large winning trades
+
+rather than maximizing win frequency.
+
+---
+
+## Visualizations
+
+The project includes:
+
+* Average PnL by Sentiment
+* Win Rate by Sentiment
+* Trade Count by Sentiment
+* Position Size by Sentiment
+* Top 10 Traders by Profit
+* PnL Distribution Analysis
+* Correlation Heatmap
+
+---
+
+## Technologies Used
+
+* Python
+* Pandas
+* NumPy
+* Matplotlib
+* Seaborn
+* Jupyter Notebook
+
+---
+
+## Business Recommendations
+
+### For Traders
+
+* Avoid excessive position sizing during Fear periods.
+* Focus on risk-reward ratio rather than win rate.
+* Reduce unnecessary trading frequency to lower transaction costs.
+
+### For Trading Platforms
+
+* Implement risk-management alerts during high-fear markets.
+* Provide analytics on trading efficiency.
+* Educate traders on risk-reward optimization.
+
+---
+
+## Conclusion
+
+The analysis demonstrates a clear relationship between Bitcoin market sentiment and trader behavior. Extreme Greed periods generate the highest profitability and win rates, while Fear periods drive the highest trading activity, largest position sizes, and highest transaction costs.
+
+The findings suggest that disciplined risk management and effective trade execution are more important than simply increasing trade frequency or maintaining a high win rate.
+
+---
 
 ## Author
 
-sanketdhonde
+**Sanket Dhonde**
 
 ## License
 
